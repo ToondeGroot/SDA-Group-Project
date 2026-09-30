@@ -29,16 +29,19 @@ class Robot:
     def __init__(self, parent):
         self.pos = [random.uniform(0, parent.displaysize[0]), random.uniform(0, parent.displaysize[1])]
         #self.pos = [0, 0]
-        self.mass = 10
+        self.mass = 100
         self.rot = 0
+        maxvel = 0.3
+        #self.vel = [random.uniform(-maxvel, maxvel), random.uniform(-maxvel, maxvel)]
         self.vel = [0, 0]
-        self.size = 10
+        self.size = 50
 
     def collisionCheck(self, parent):
+
         #Collision checks
         #if you hit a wall it flips all the velocity vectors
         for i in parent.collisionObjects:
-            if (self.pos[0] > i.pos[0] and self.pos[0] < i.pos[0] + i.size[0]) and (self.pos[1] > i.pos[1] and self.pos[1] < i.pos[1] + i.size[1]):
+            if (self.pos[0] + self.size > i.pos[0] and self.pos[0] - self.size < i.pos[0] + i.size[0]) and (self.pos[1] + self.size > i.pos[1] and self.pos[1] - self.size < i.pos[1] + i.size[1]):
                 self.vel[0] = -1*self.vel[0]
                 self.vel[1] = -1*self.vel[1]
 
@@ -55,17 +58,22 @@ class Robot:
     def update(self, parent):
         self.pos[0] += self.vel[0] / parent.dt
         self.pos[1] += self.vel[1] / parent.dt
-        self.rot = -angle([0, 1], self.vel) if length(self.vel) != 0 else 0
+        self.rot = math.atan2(self.vel[1], self.vel[0]) if length(self.vel) != 0 else 0
+
+        if length(self.vel) > 1:
+            self.vel = [0.0, 0.0]
+
         self.collisionCheck(parent)
-
-
 
     def draw(self, parent):
         pygame.draw.circle(parent.screen, (0, 0, 255), self.pos, self.size)
 
+        #pygame.draw.line(parent.screen, (0, 255, 0), self.pos, [self.pos[0] + math.cos(self.rot)*100, self.pos[1] + math.sin(self.rot)*100])
+        
         #draw eyes
-        eye1Pos = [self.pos[0] + math.cos(self.rot + math.radians(15)) * self.size/2, self.pos[1] + math.sin(self.rot + math.radians(15)) * self.size/2]
-        eye2Pos = [self.pos[0] - math.cos(self.rot - math.radians(15)) * self.size/2, self.pos[1] - math.sin(self.rot - math.radians(15)) * self.size/2]
+        eyeAngle = 45
+        eye1Pos = [self.pos[0] + math.cos(self.rot + math.radians(eyeAngle)) * self.size/1.5, self.pos[1] + math.sin(self.rot + math.radians(eyeAngle)) * self.size/1.5]
+        eye2Pos = [self.pos[0] + math.cos(self.rot - math.radians(eyeAngle)) * self.size/1.5, self.pos[1] + math.sin(self.rot - math.radians(eyeAngle)) * self.size/1.5]
         pygame.draw.circle(parent.screen, (250, 250, 250), eye1Pos, self.size/4)
         pygame.draw.circle(parent.screen, (250, 250, 250), eye2Pos, self.size/4)
 
@@ -79,11 +87,17 @@ class Main:
         self.FrameRate = 60
         pygame.init()
         self.screen = pygame.display.set_mode(self.displaysize)
+        
+        self.collisionObjects = [
+            #Outside walls
+            CollisionObject([0, 0], [10, 1080]), CollisionObject([0, 0], [1920, 10]),
+            CollisionObject([0, 1080-10], [1920, 10]), CollisionObject([1920-10, 0], [10, 1080]),
 
-        self.collisionObjects = [CollisionObject([0, 0], [10, 1080]), CollisionObject([0, 0], [1920, 10]), CollisionObject([0, 1080-10], [1920, 10]), CollisionObject([1920-10, 0], [10, 1080])]
+            CollisionObject([500, 0], [20, 400]), CollisionObject([1000, 400], [20, 800]),
+        ]
 
         self.robots = []
-        for i in range(100):
+        for i in range(10):
             self.robots.append(Robot(self))
 
 
@@ -105,7 +119,7 @@ class Main:
                 robot.update(self)
                 robot.draw(self)
 
-                robot.applyForce([random.uniform(-0.1, 0.1), random.uniform(-0.1, 0.1)])
+                robot.applyForce([random.uniform(-1, 1), random.uniform(-1, 1)])
 
             pygame.display.flip()
         pygame.quit()
