@@ -17,7 +17,21 @@ def distance(v1, v2):
 
 class navigationSystem:
     def __init__(self, parent):
-        pass
+        self.networkNodes = []
+        for node in range(1000):
+            pos = [random.uniform(0, parent.displaysize[0]), random.uniform(0, parent.displaysize[1])]
+            for i in parent.collisionObjects:
+                if (pos[0] + 5 > i.pos[0] and pos[0] - 5 < i.pos[0] + i.size[0]) and (pos[1] + 5 > i.pos[1] and pos[1] - 5 < i.pos[1] + i.size[1]):
+                    break
+            else:
+                self.networkNodes.append(navigationNode(pos))
+
+
+class navigationNode:
+    def __init__(self, pos):
+        self.name = "Empty"
+        self.pos = pos
+        self.ConnectingNodes = {}
 
 class CollisionObject: #aka wall
     def __init__(self, pos, size):
@@ -30,17 +44,17 @@ class CollisionObject: #aka wall
 
 class Robot:
     def __init__(self, parent):
-        self.pos = [random.uniform(0, parent.displaysize[0]), random.uniform(0, parent.displaysize[1])]
-        #self.pos = [0, 0]
+        #self.pos = [random.uniform(0, parent.displaysize[0]), random.uniform(0, parent.displaysize[1])]
+        self.pos = [100, 100]
         self.mass = 100
         self.rot = 0
         maxvel = 0.3
         #self.vel = [random.uniform(-maxvel, maxvel), random.uniform(-maxvel, maxvel)]
-        self.vel = [-0.5, 0.5]
-        self.size = 10
+        self.vel = [0, 0]
+        self.size = 20
+        self.navigation = navigationSystem(parent)
 
     def collisionCheck(self, parent):
-
         #Collision checks
         #if you hit a wall it flips all the velocity vectors
         for i in parent.collisionObjects:
@@ -79,6 +93,9 @@ class Robot:
         eye2Pos = [self.pos[0] + math.cos(self.rot - math.radians(eyeAngle)) * self.size/1.5, self.pos[1] + math.sin(self.rot - math.radians(eyeAngle)) * self.size/1.5]
         pygame.draw.circle(parent.screen, (250, 250, 250), eye1Pos, self.size/4)
         pygame.draw.circle(parent.screen, (250, 250, 250), eye2Pos, self.size/4)
+
+        for i in self.navigation.networkNodes:
+            pygame.draw.circle(parent.screen, (0, 255, 0), i.pos, 5)
 
 
 class Main:
