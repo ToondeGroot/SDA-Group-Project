@@ -15,6 +15,9 @@ def angle(v1, v2):
 def distance(v1, v2):
     return math.sqrt((v1[0] - v2[0])**2 + (v1[1] - v2[1])**2)
 
+class navigationSystem:
+    def __init__(self, parent):
+        pass
 
 class CollisionObject: #aka wall
     def __init__(self, pos, size):
@@ -33,8 +36,8 @@ class Robot:
         self.rot = 0
         maxvel = 0.3
         #self.vel = [random.uniform(-maxvel, maxvel), random.uniform(-maxvel, maxvel)]
-        self.vel = [0, 0]
-        self.size = 50
+        self.vel = [-0.5, 0.5]
+        self.size = 10
 
     def collisionCheck(self, parent):
 
@@ -42,13 +45,13 @@ class Robot:
         #if you hit a wall it flips all the velocity vectors
         for i in parent.collisionObjects:
             if (self.pos[0] + self.size > i.pos[0] and self.pos[0] - self.size < i.pos[0] + i.size[0]) and (self.pos[1] + self.size > i.pos[1] and self.pos[1] - self.size < i.pos[1] + i.size[1]):
-                self.vel[0] = -1*self.vel[0]
-                self.vel[1] = -1*self.vel[1]
+                self.vel[0] = -1*self.vel[0] + random.uniform(-self.vel[0]/2, self.vel[0]/2)
+                self.vel[1] = -1*self.vel[1] + random.uniform(-self.vel[1]/2, self.vel[1]/2)
 
         for i in parent.robots:
             if distance(self.pos, i.pos) < self.size + i.size and i != self:
-                self.vel[0] = -1*self.vel[0]
-                self.vel[1] = -1*self.vel[1]
+                self.vel[0] = -1*self.vel[0] + random.uniform(-self.vel[0]/2, self.vel[0]/2)
+                self.vel[1] = -1*self.vel[1] + random.uniform(-self.vel[1]/2, self.vel[1]/2)
 
 
     def applyForce(self, force):
@@ -97,7 +100,7 @@ class Main:
         ]
 
         self.robots = []
-        for i in range(10):
+        for i in range(1):
             self.robots.append(Robot(self))
 
 
@@ -119,7 +122,7 @@ class Main:
                 robot.update(self)
                 robot.draw(self)
 
-                robot.applyForce([random.uniform(-1, 1), random.uniform(-1, 1)])
+                #robot.applyForce([random.uniform(-1, 1), random.uniform(-1, 1)])
 
             pygame.display.flip()
         pygame.quit()
