@@ -1,4 +1,4 @@
-import pygame, random, robot, simManager, SDAmath, math
+import pygame, simManager, UI
 
 class RenderingContext:
     def __init__(self):
@@ -6,10 +6,11 @@ class RenderingContext:
         self.displaysize = (1920, 1080)
         self.clock = pygame.time.Clock()
         self.dt = 0 
-        self.FrameRate = 60
+        self.FrameRate = 30
         pygame.init()
         self.screen = pygame.display.set_mode(self.displaysize)
         self.simManager = simManager.simulationManager(self)
+        self.UI = UI.UI()
 
     def main(self):
         while self.Active:
@@ -22,6 +23,8 @@ class RenderingContext:
             self.dt = self.clock.tick(self.FrameRate) / 1000
 
             self.simManager.update(self)
+            self.simManager.draw(self)
+            #self.UI.update(self)
 
             pygame.display.flip()
         pygame.quit()
