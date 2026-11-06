@@ -3,7 +3,7 @@ import pygame, simManager, UI
 class RenderingContext:
     def __init__(self):
         self.Active = True
-        self.displaysize = (1920, 1080)
+        self.displaysize = (1000, 1000)
         self.clock = pygame.time.Clock()
         self.dt = 0 
         self.FrameRate = 120
