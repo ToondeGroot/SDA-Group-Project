@@ -6,7 +6,7 @@ class RenderingContext:
         self.displaysize = (1920, 1080)
         self.clock = pygame.time.Clock()
         self.dt = 0 
-        self.FrameRate = 30
+        self.FrameRate = 120
         pygame.init()
         self.screen = pygame.display.set_mode(self.displaysize)
         self.simManager = simManager.simulationManager(self)
@@ -16,14 +16,10 @@ class RenderingContext:
         while self.Active:
             self.screen.fill("black")
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.Active = False
-
             self.dt = self.clock.tick(self.FrameRate) / 1000
 
-            self.simManager.update(self)
-            self.simManager.draw(self)
+            self.simManager.update()
+            self.simManager.draw()
             #self.UI.update(self)
 
             pygame.display.flip()
