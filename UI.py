@@ -1,5 +1,7 @@
 import pygame
 
+# not used
+
 class UI: 
     def __init__(self):
         self.size = [500, 300]

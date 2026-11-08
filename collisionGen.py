@@ -55,6 +55,7 @@ class CollisionGen:
         ]
 
     def draw(self):
+        #call every collisionObject's draw function
         for collisionObject in self.collisionObjects:
             collisionObject.draw()
 
@@ -65,6 +66,7 @@ class CollisionObject: #aka wall
         self.size = size
 
     def draw(self):
+        #draw the wall using pygame
         pygame.draw.rect(self.RenderingContext.screen, (255, 0, 0), (self.pos[0], self.pos[1], self.size[0], self.size[1]))
         
         # for i in self.networkNodes:

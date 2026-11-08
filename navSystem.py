@@ -1,6 +1,6 @@
 import random, pygame, SDAmath
 
-class Planner:
+class Planner: # responsible for calculating a route from a to b
     def __init__(self, renderingContext):
         self.renderingContext = renderingContext
         self.StartingNode = None
@@ -8,7 +8,7 @@ class Planner:
         self.path = []
 
 
-    def calculatePath(self, start, end, networkNodes):
+    def calculatePath(self, start, end, networkNodes):  #find closest start and endnodes, then run dijkstra's algorithm
         if not networkNodes:
             self.path = []
             return self.path
@@ -20,7 +20,7 @@ class Planner:
         self.path = self.dijkstra(self.StartingNode, self.EndingNode, networkNodes)
         return self.path
 
-    def dijkstra(self, startNode, endNode, networkNodes):
+    def dijkstra(self, startNode, endNode, networkNodes): # use dijkstra's algorithm to claculate a route from startNode to endNode
         unvisited = {node: float('inf') for node in networkNodes}
         unvisited[startNode] = 0
         previous_nodes = {node: None for node in networkNodes}
@@ -56,7 +56,7 @@ class Planner:
         pygame.draw.circle(screen, (255, 0, 255), self.StartingNode.pos, 10)
         pygame.draw.circle(screen, (255, 0, 255), self.EndingNode.pos, 10)
 
-class navigationSystem:
+class navigationSystem:  # responsible for guiding the robot and determining what to do
     def __init__(self, renderingContext, simContext, robot, nodeCount=500, radius=5):
         self.networkNodes = []
         self.connectionPaths = []
@@ -96,10 +96,10 @@ class navigationSystem:
 
         self.planner = Planner(self.renderingContext)
         
-    def recalculateRoute(self):
+    def recalculateRoute(self): # call the planner to recaclulate a path with the targetPos
         self.path = self.planner.calculatePath(self.robot.pos, self.currentTargetPos, self.networkNodes)
 
-    def update(self):
+    def update(self): # main cycling loop for navigation logic
         multiplier = -300#tuning parameter
 
         for event in pygame.event.get():
@@ -118,7 +118,7 @@ class navigationSystem:
             if deltaDistance < 10:
                 self.currentPathNode += 1
 
-    def pointCollides(self, pos):
+    def pointCollides(self, pos): # check if point collides with a collider
         r = self.radius
         for gen in self.simContext.collisionGenInstances:
             for obj in gen.collisionObjects:
@@ -131,7 +131,7 @@ class navigationSystem:
                     return True
         return False
     
-    def lineCollides(self, a, b):
+    def lineCollides(self, a, b): # check if line collides with a collider
         r = self.radius
         dx = b[0] - a[0]
         dy = b[1] - a[1]
@@ -183,7 +183,7 @@ class navigationSystem:
                 self.renderingContext.screen.blit(font.render(node.name, True, (255, 255, 255)), (node.pos[0] - 5, node.pos[1] - 5))
         
 
-class navigationNode:
+class navigationNode: # one node instance, with data for position name and connecting node references
     def __init__(self, pos, *args):
         self.name = "Empty"
         if args:

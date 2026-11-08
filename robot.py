@@ -1,6 +1,6 @@
 import random, SDAmath, math, pygame, navSystem
 
-class Robot:
+class Robot: #the robot instance, with all the underlying logic
     def __init__(self, renderingContext, simContext):
         #self.pos = [random.uniform(0, parent.displaysize[0]), random.uniform(0, parent.displaysize[1])]
         self.pos = [100, 100]
@@ -14,18 +14,18 @@ class Robot:
         self.renderingContext = renderingContext
         self.navigation = navSystem.navigationSystem(renderingContext, self.simContext, self)
 
-    def collisionCheck(self):
+    def collisionCheck(self): # stupidly simple collisions
         #Collision checks
         #if you hit a wall it flips all the velocity vectors:
         if self.navigation.pointCollides(self.pos):
             self.vel[0] = -1*self.vel[0] + random.uniform(-self.vel[0]/2, self.vel[0]/2)
             self.vel[1] = -1*self.vel[1] + random.uniform(-self.vel[1]/2, self.vel[1]/2)
 
-    def applyForce(self, forceX, forceY):
+    def applyForce(self, forceX, forceY): #move the robot by appling force (simple rigidbody sim)
         self.vel[0] += forceX / self.mass
         self.vel[1] += forceY / self.mass
 
-    def update(self):
+    def update(self): # update navigation system, position and rotation
         self.navigation.update()
         self.pos[0] += self.vel[0] * self.renderingContext.dt
         self.pos[1] += self.vel[1] * self.renderingContext.dt
@@ -36,11 +36,13 @@ class Robot:
 
         self.collisionCheck()
 
-    def draw(self):
+    def draw(self): 
         self.navigation.draw()
+        #draw the robot body
         pygame.draw.circle(self.renderingContext.screen, (0, 0, 255), self.pos, self.size)
 
         #draw eyes
+        #nath for rotating the eyes to the direction of travel
         eyeAngle = 45
         eye1Pos = [self.pos[0] + math.cos(self.rot + math.radians(eyeAngle)) * self.size/1.5, self.pos[1] + math.sin(self.rot + math.radians(eyeAngle)) * self.size/1.5]
         eye2Pos = [self.pos[0] + math.cos(self.rot - math.radians(eyeAngle)) * self.size/1.5, self.pos[1] + math.sin(self.rot - math.radians(eyeAngle)) * self.size/1.5]

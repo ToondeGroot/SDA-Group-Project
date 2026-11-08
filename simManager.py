@@ -1,6 +1,6 @@
 import robot, collisionGen, random
 
-class simulationManager:
+class simulationManager: # responsible for keeping track of the simulated robot and colliders
     def __init__(self, renderingContext):
         self.collisionGenInstances = []
         self.collisionGenInstances.append(collisionGen.CollisionGen(renderingContext))

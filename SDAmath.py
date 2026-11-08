@@ -1,5 +1,7 @@
 import math
 
+#extra math functions for the system and math module /\
+
 #extra math for rotating the lil guy
 def dotproduct(v1, v2):
   return sum((a*b) for a, b in zip(v1, v2))

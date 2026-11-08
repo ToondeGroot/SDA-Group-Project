@@ -1,6 +1,6 @@
 import pygame, simManager, UI
 
-class RenderingContext:
+class RenderingContext: # responisble for the pygame context and display parameters
     def __init__(self):
         self.Active = True
         self.displaysize = (1000, 1000)
@@ -13,17 +13,18 @@ class RenderingContext:
         self.UI = UI.UI()
 
     def main(self):
-        while self.Active:
-            self.screen.fill("black")
+        while self.Active: # root running loop
+            self.screen.fill("black") # draw black
 
-            self.dt = self.clock.tick(self.FrameRate) / 1000
+            self.dt = self.clock.tick(self.FrameRate) / 1000 #calc frametime
 
-            self.simManager.update()
-            self.simManager.draw()
+            self.simManager.update() #calculate current frame
+            self.simManager.draw() #draw current frame
             #self.UI.update(self)
 
             pygame.display.flip()
         pygame.quit()
 
+#instance the rendering context and run the code
 renderingContext = RenderingContext()
 renderingContext.main()
